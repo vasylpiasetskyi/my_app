@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Company{% endblock title %}
+
+
+{% block content %}
+    <div class='row'>
+        <h2 class="pl-3">Largest American companies by market capitalization</h2>
+        <div class='col-sm-6' id="content" style="display: none;">
+            {% for item in qs %}
+                <div class="inner">
+                    <div class="alert alert-primary" style="display: none;" id="{{ forloop.counter0 }}">
+                        <p>{{ item.title }} | {{ item.price }} $</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class='col-sm-8 mx-auto' id="graph">
+            <canvas id="myChart" width="200" height="200"></canvas>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            const ctx = document.getElementById('myChart');
+            const myChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: [{% for item in qs %}'{{ item.title }}',{% endfor %}],
+                    datasets: [{
+                        label: 'Price ($) for company shares',
+                        data: [{% for item in qs %}'{{ item.price }}',{% endfor %}],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+
+                }
+            });
+
+            function clickHandler(click) {
+                const points = myChart.getElementsAtEventForMode(click, 'nearest', {
+                    intersect: true
+                }, true)
+                if (points[0]) {
+                    const graph = document.getElementById("graph")
+                    graph.classList = ("col-sm-6")
+                    const index = points[0].index
+                    const elementTogle = document.getElementById(index)
+                    const contentTogle = document.getElementById("content")
+                    if (contentTogle.style.display === "none") {
+                        contentTogle.style.display = "block";
+                    }
+                    if (elementTogle.style.display === "none") {
+                        elementTogle.style.display = "block";
+                    } else {
+                        elementTogle.style.display = "none";
+                    }
+                    const container = document.querySelector('#content')
+                    const matches = container.querySelectorAll('div.inner div:not([style*="display: none;"])')
+
+                    if (matches.length === 0) {
+                        contentTogle.style.display = "none";
+                        graph.classList = ("col-sm-8 mx-auto")
+                    }
+                }
+            };
+            myChart.canvas.onclick = clickHandler;
+        })
+    </script>
+
+{% endblock %}

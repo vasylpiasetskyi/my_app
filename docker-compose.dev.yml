@@ -1,0 +1,42 @@
+version: "3"
+services:
+    redis:
+        image: redis:alpine
+        networks:
+            - my_app-network
+    app:
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        container_name: app_my_app
+        env_file:
+            - ./.env
+        environment:
+            - DJANGO_SETTINGS_MODULE=config.settings.dev
+        ports:
+            - "8000:8000"
+        command: tail -f /dev/null
+#        command: "python3 src/manage.py runserver 0.0.0.0:8000"
+
+        networks:
+            - my_app-network
+        volumes:
+            - .:/app
+        depends_on:
+            - db
+            - redis
+    db:
+        image: postgres:14.2-alpine3.15
+        container_name: db_my_app
+        restart: always
+        env_file:
+            - ./.env
+        ports:
+            - "127.0.0.1:5432:5432"
+        volumes:
+            - ./data/postgres/data:/var/lib/postgresql/data
+        networks:
+            - my_app-network
+networks:
+    my_app-network:
+        driver: bridge
