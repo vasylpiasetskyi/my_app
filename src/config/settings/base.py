@@ -31,9 +31,10 @@ INSTALLED_APPS = [
 
     # Local
     'articles',
-    'companies',
-    'kpis',
+    'shop',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -122,7 +123,7 @@ STATICFILES_FINDERS = [
 ]
 
 # STATICFILES_DIRS = [
-#     os.path.join(PROJECT_DIR, 'static'),
+#     os.path.join(APP_DIR, 'static'),
 # ]
 
 # ManifestStaticFilesStorage is recommended in production, to prevent outdated
@@ -131,11 +132,12 @@ STATICFILES_FINDERS = [
 # STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
-STATIC_ROOT = os.path.join(APP_DIR, 'static')
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(APP_DIR, 'static/')
 
-MEDIA_ROOT = os.path.join(APP_DIR, 'media')
+
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(APP_DIR, 'media/')
 
 
 # django-allauth config
@@ -147,7 +149,17 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_URL = '/account/login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USERNAME_BLACKLIST = ["admin", "god", "bella"]
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 LOGGING = LOGGING
+
+
+CART_SESSION_ID = 'cart'
