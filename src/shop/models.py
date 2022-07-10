@@ -57,8 +57,15 @@ class Product(models.Model):
 
     def model_to_dict(self):
         data = {}
-
         for field in self._meta.fields:
             if field.name in self.fields_to_retrive:
-                data[field.name] = field.value_from_object(self)
+                if field.is_relation:
+                    foreignkey = getattr(self, field.name)
+                    if foreignkey:
+                        try:
+                            data[field.name] = foreignkey.name
+                        except:
+                            pass
+                else:
+                    data[field.name] = field.value_from_object(self)
         return data
