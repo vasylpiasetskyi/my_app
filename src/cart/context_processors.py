@@ -1,12 +1,27 @@
 from .cart import Cart, Compare
 
 
-def cart(request):
-    return {'cart': Cart(request),
-            }
+# def cart(request):
+#     return {
+#         'cart': Cart(request),
+#     }
+#
+#
+# def compare(request):
+#     return {
+#         'compare': Compare(request),
+#     }
 
 
-def compare(request):
+def ctx(request):
+    x = Cart(request)
+
+    y = Compare(request)
+
+    print(x.cart)
+    print(y.compare)
+
     return {
-        'compare': Compare(request),
+        'cart': x,
+        'compare': y,
     }

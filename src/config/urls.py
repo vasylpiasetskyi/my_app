@@ -29,6 +29,8 @@ urlpatterns = [
     path('about/', AboutPageView.as_view(), name='about'),
     # Applications
     path('', include('articles.urls')),
+    # Orders
+    path('orders/', include('orders.urls', namespace='orders')),
     # Shop
     path('shop/', include('shop.urls', namespace='shop')),
     # Cart

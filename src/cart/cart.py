@@ -6,6 +6,7 @@ from shop.models import Product
 class Cart(object):
 
     def __init__(self, request):
+        print("!!!!!!START")
         """
         Initialize the cart.
         """
@@ -30,8 +31,8 @@ class Cart(object):
             cart[str(product.id)]['product'] = product
 
         for item in cart.values():
-            item['price'] = Decimal(item['price'])
-            item['total_price'] = item['price'] * item['quantity']
+            item['price'] = float(item['price'])
+            item['total_price'] = float(item['price']) * item['quantity']
             yield item
 
     def __len__(self):
@@ -47,7 +48,7 @@ class Cart(object):
         product_id = str(product.id)
         if product_id not in self.cart:
             self.cart[product_id] = {'quantity': 0,
-                                     'price': str(product.price)}
+                                     'price': str(product.price),}
         if override_quantity:
             self.cart[product_id]['quantity'] = quantity
         else:
@@ -73,7 +74,7 @@ class Cart(object):
         self.save()
 
     def get_total_price(self):
-        return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values())
+        return sum(float(item['price']) * item['quantity'] for item in self.cart.values())
 
 
 class Compare(object):

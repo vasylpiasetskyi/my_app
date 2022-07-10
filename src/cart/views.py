@@ -31,7 +31,7 @@ def cart_detail(request):
     for item in cart:
         item['update_quantity_form'] = CartAddProductForm(initial={'quantity': item['quantity'],
                                                                    'override': True})
-    return render(request, 'cart/cart_detail.html', {'cart': cart})
+    return render(request, 'cart/cart_detail.html', {'cart': cart,})
 
 
 @require_POST
@@ -54,6 +54,7 @@ def compare_remove(request, product_id):
 
 
 def compare_detail(request):
+    pass
     compare = Compare(request)
     products = Product.objects.filter(id__in=compare.compare).all()
     return render(request, 'compare/compare_detail.html', {'compare': compare, 'products': products}, )
