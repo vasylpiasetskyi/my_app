@@ -1,6 +1,5 @@
 {% load static %}
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -32,12 +31,6 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'shop:product_list' %}">Shop</a>
                 </li>
-
-                <!--                {% if user.is_authenticated %}-->
-                <!--                <li class="nav-item">#}-->
-                <!--                    <a class="nav-link" href="">Companies</a>-->
-                <!--                </li>-->
-                <!--                {% endif %}-->
             </ul>
 
             {% if user.is_authenticated %}
@@ -74,9 +67,33 @@
 </div>
 <div id="subheader">
     <div class="cart">
+        {% with total_items=cart|length %}
+        {% if total_items > 0 %}
+        Your cart:
+        <a href="{% url 'cart:cart_detail' %}">
+            {{ total_items }} item{{ total_items|pluralize }},
+            ${{ cart.get_total_price }}
+        </a>
+        {% else %}
         Your cart is empty.
+        {% endif %}
+        {% endwith %}
+    </div>
+    <div class="compare">
+        {% with total_items=compare|length %}
+        {% if total_items > 0 %}
+        Your compare:
+        <a href="{% url 'cart:compare_detail' %}">
+            {{ total_items }} item{{ total_items|pluralize }},
+        </a>
+        {% else %}
+        Your compare is empty.
+        {% endif %}
+        {% endwith %}
     </div>
 </div>
+
+
 <div id="content">
 
     <div class="container" style="padding-top: 70px">

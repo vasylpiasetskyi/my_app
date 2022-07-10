@@ -1,7 +1,10 @@
+import os
+
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView
 
 from shop.models import Category, Product
+from cart.forms import CartAddProductForm, CompareAddProductForm
 
 
 class ProductListView(ListView):
@@ -34,6 +37,12 @@ class ProductDetailView(DetailView):
     pk_url_kwarg = 'id'
     query_pk_and_slug = True
 
+    cart_product_form = CartAddProductForm()
+    compare_product_form = CompareAddProductForm()
+
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data()
+        context['cart_product_form'] = self.cart_product_form
+        context['compare_product_form'] = self.compare_product_form
         return context

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+Your shopping cart
+{% endblock %}
+
+{% block content %}
+<h1>Your Compare List</h1>
+<div class="container">
+    <div>
+        <table class="cart">
+            <thead>
+            <tr>
+                <th>Parameters</th>
+                {% for product in products%}
+                <th>{{ product.name}}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tr>
+                <th></th>
+                {% for product in products%}
+                <th>
+                    <form action="{% url 'cart:compare_remove' product.id %}" method="post">
+                        <input type="submit" value="Remove">
+                        {% csrf_token %}
+                    </form>
+                </th>
+                {% endfor %}
+            </tr>
+            <tbody>
+            {% for key_, _ in products.0.model_to_dict.items %}
+            <tr>
+                <td>
+                    {{ key_ }}
+                </td>
+                {% for product in products%}
+                <td>
+                    {% for k, v in product.model_to_dict.items %}
+                    {% if k == key_ %}
+                    {% if k == 'image' %}
+                    <a href="{{ product.get_absolute_url }}">
+                        <img src="{% if product.image %}{{ product.image.url }}
+                            {% else %}{% static 'img/no_image.png' %}{% endif %}">
+                    </a>
+                    {%else%}
+                    {{v}}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </td>
+                {% endfor %}
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<p class="text-right">
+    <a href="{% url 'shop:product_list' %}" class="button
+    light">Continue shopping</a>
+
+</p>
+{% endblock %}

@@ -31,6 +31,8 @@ urlpatterns = [
     path('', include('articles.urls')),
     # Shop
     path('shop/', include('shop.urls', namespace='shop')),
+    # Cart
+    path('cart/', include('cart.urls', namespace='cart')),
 
 ]
 

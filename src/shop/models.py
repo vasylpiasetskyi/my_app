@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import ForeignKey
 from django.urls import reverse
 
 
@@ -48,3 +49,16 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('shop:product_detail',
                        args=[self.id, self.slug])
+
+    @property
+    def fields_to_retrive(self):
+        fields = ["category", "name", "description", "image", "price"]
+        return fields
+
+    def model_to_dict(self):
+        data = {}
+
+        for field in self._meta.fields:
+            if field.name in self.fields_to_retrive:
+                data[field.name] = field.value_from_object(self)
+        return data

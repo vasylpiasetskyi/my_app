@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     # Local
     'articles',
     'shop',
+    'cart',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -62,11 +63,12 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart',
+                'cart.context_processors.compare',
             ],
         },
     },
 ]
-
 
 
 WSGI_APPLICATION = 'config.wsgi.application'
@@ -122,9 +124,9 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-# STATICFILES_DIRS = [
-#     os.path.join(APP_DIR, 'static'),
-# ]
+STATICFILES_DIRS = [
+    os.path.join(APP_DIR, 'static'),
+]
 
 # ManifestStaticFilesStorage is recommended in production, to prevent outdated
 # JavaScript / CSS assets being served from cache (e.g. after a Wagtail upgrade).
@@ -133,11 +135,11 @@ STATICFILES_FINDERS = [
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(APP_DIR, 'static/')
+# STATIC_ROOT = os.path.join(APP_DIR, 'static')
 
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(APP_DIR, 'media/')
+MEDIA_ROOT = os.path.join(APP_DIR, 'media')
 
 
 # django-allauth config
@@ -163,3 +165,4 @@ LOGGING = LOGGING
 
 
 CART_SESSION_ID = 'cart'
+COMPARE_SESSION_ID = 'compare'
