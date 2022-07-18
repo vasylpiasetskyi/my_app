@@ -1,9 +1,15 @@
+import logging
+from celery.utils.log import get_task_logger
+
 from django.shortcuts import render
 from django.views.generic import ListView
 
 from cart.cart import Cart
 from .models import OrderItem, Order
 from .forms import OrderCreateForm
+from .tasks import order_created, rand
+
+from django.http import HttpResponse
 
 
 def order_create(request):
@@ -21,6 +27,9 @@ def order_create(request):
                                          quantity=item['quantity'])
             # clear the cart
             cart.clear()
+            # launch asynchronous task
+            order_created.delay(order.id)
+            # order_created(order.id)
             return render(request,
                           'orders/order/created.html',
                           {'order': order})
@@ -36,7 +45,6 @@ class OrderListView(ListView):
     template_name = 'orders/order/order_list.html'
     context_object_name = 'orders'
 
-
     def get_queryset(self):
         queryset = Order.objects.filter(client=self.request.user).all()
         return queryset
@@ -44,3 +52,8 @@ class OrderListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
+
+
+def clr(request):
+    rand.delay()
+    return HttpResponse('<h1>CELERY TEST!!!!</h1>')
