@@ -19,3 +19,15 @@ My app projects created by Django
 - Visit `localhost:8000`
 - To shutdown project run `fab stop`
 - If you can't install or use fabric see `fabfile.py` for correct docker command
+
+
+## DB Backup and Restore
+- To restore db data from fixtures/db_dump.sql with `fab db_restore`
+- To backup db data to fixtures/db_dump.sql with `fab db_backup`
+
+
+## Demo users:
+Admin:
+- username: admin
+- email: admin@admin.com
+- password: admin

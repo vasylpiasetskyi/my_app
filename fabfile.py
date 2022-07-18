@@ -9,9 +9,8 @@ Install fabric3 from console:
 import multiprocessing
 from fabric.api import task, local
 
-
 DC = "docker-compose -f docker-compose.dev.yml"
-SETTINGS = "--settings config.settings.dev"
+SETTINGS = "--settings my_app.settings.dev"
 PYTHON = "python3"
 
 
@@ -78,10 +77,23 @@ def migrate(app='', settings=SETTINGS):
 @task
 def run(settings=SETTINGS):
     """Run django development server.
-    docker-compose -f docker-compose.dev.yml exec app python3 src/manage.py runserver 0.0.0.0:8000 --settings config.settings.dev
+    docker-compose -f docker-compose.dev.yml exec app python3 src/manage.py runserver 0.0.0.0:8000 --settings my_app.settings.dev
     """
     local_addr = "0.0.0.0:8000"
     local(f"{DC} exec app {PYTHON} src/manage.py runserver {local_addr} {settings}")
+
+
+# @task
+# def run(settings=SETTINGS):
+#     """Run django development server with celery worker and celery beat.
+#     docker-compose -f docker-compose.dev.yml exec -d worker celery --app good_job --workdir ./src worker --loglevel INFO -f /app/logs/worker.log & \
+#     docker-compose -f docker-compose.dev.yml exec -d beat celery --app good_job --workdir ./src beat --loglevel INFO -f /app/logs/beat.log & \
+#     docker-compose -f docker-compose.dev.yml exec app python3 src/manage.py runserver 0.0.0.0:8000 --settings good_job.settings.dev
+#     """
+#     local_addr = "0.0.0.0:8000"
+#     local(f"{DC} exec -d worker celery --app my_app --workdir ./src worker --loglevel INFO -f /app/logs/worker.log & "
+#           f"{DC} exec -d beat celery --app my_app --workdir ./src beat --loglevel INFO -f /app/logs/beat.log & "
+#           f"{DC} exec app {PYTHON} src/manage.py runserver {local_addr} {settings}")
 
 
 @task
@@ -142,3 +154,23 @@ def pytest(app_name='', multicore=False, isort=False):
     settings = "settings.testing"
     pytest_cmd = ('{} exec app bash -c "cd /app/src && pytest {0} -x -s -v {1} {2} --create-db --reuse-db --ds={}"')
     local(pytest_cmd.format(DC, app_name, cpu_cores, use_isort, settings))
+
+
+@task
+def db_backup(container_name='db_my_app', dest="fixtures/db_dump.sql"):
+    """Make backup for database.
+
+    Example:
+        docker exec -t -u postgres db_my_app pg_dumpall -c > fixtures/db_dump.sql
+    """
+    local(f"docker exec -t -u postgres {container_name} pg_dumpall -c > {dest}")
+
+
+@task
+def db_restore(container_name='db_my_app', src="fixtures/db_dump.sql"):
+    """Restore DB data from sql file.
+
+    Example:
+        cat fixtures/db_dump.sql | docker exec -i goodjob_db_1 psql -Upostgres
+    """
+    local(f"cat {src} | docker exec -i {container_name} psql -Upostgres")

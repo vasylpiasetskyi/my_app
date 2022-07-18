@@ -31,9 +31,12 @@ INSTALLED_APPS = [
 
     # Local
     'articles',
-    'companies',
-    'kpis',
+    'shop',
+    'cart',
+    'orders'
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -45,7 +48,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = 'my_app.urls'
 
 TEMPLATES = [
     {
@@ -61,14 +64,16 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'cart.context_processors.cart',
+                # 'cart.context_processors.compare',
+                'cart.context_processors.ctx',
             ],
         },
     },
 ]
 
 
-
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = 'my_app.wsgi.application'
 
 
 # Database
@@ -121,9 +126,9 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-# STATICFILES_DIRS = [
-#     os.path.join(PROJECT_DIR, 'static'),
-# ]
+STATICFILES_DIRS = [
+    os.path.join(APP_DIR, 'static'),
+]
 
 # ManifestStaticFilesStorage is recommended in production, to prevent outdated
 # JavaScript / CSS assets being served from cache (e.g. after a Wagtail upgrade).
@@ -131,11 +136,12 @@ STATICFILES_FINDERS = [
 # STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
-STATIC_ROOT = os.path.join(APP_DIR, 'static')
 STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(APP_DIR, 'static')
 
-MEDIA_ROOT = os.path.join(APP_DIR, 'media')
+
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(APP_DIR, 'media')
 
 
 # django-allauth config
@@ -147,7 +153,28 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_URL = '/account/login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USERNAME_BLACKLIST = ["admin", "god", "bella"]
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-LOGGING = LOGGING
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = 'your_account@gmail.com'
+# EMAIL_HOST_PASSWORD = 'your_password'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+
+
+# LOGGING = LOGGING
+
+
+CART_SESSION_ID = 'cart'
+COMPARE_SESSION_ID = 'compare'
+
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_RESULT_BACKEND = "redis://redis:6379"
