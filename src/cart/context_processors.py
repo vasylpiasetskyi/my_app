@@ -14,14 +14,7 @@ from .cart import Cart, Compare
 
 
 def ctx(request):
-    x = Cart(request)
-
-    y = Compare(request)
-
-    print(x.cart)
-    print(y.compare)
-
     return {
-        'cart': x,
-        'compare': y,
+        'cart': Cart(request),
+        'compare': Compare(request),
     }
