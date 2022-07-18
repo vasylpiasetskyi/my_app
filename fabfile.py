@@ -9,7 +9,6 @@ Install fabric3 from console:
 import multiprocessing
 from fabric.api import task, local
 
-
 DC = "docker-compose -f docker-compose.dev.yml"
 SETTINGS = "--settings my_app.settings.dev"
 PYTHON = "python3"
@@ -97,7 +96,6 @@ def run(settings=SETTINGS):
 #           f"{DC} exec app {PYTHON} src/manage.py runserver {local_addr} {settings}")
 
 
-
 @task
 def collectstatic(settings=SETTINGS):
     """Collect static for production."""
@@ -156,3 +154,23 @@ def pytest(app_name='', multicore=False, isort=False):
     settings = "settings.testing"
     pytest_cmd = ('{} exec app bash -c "cd /app/src && pytest {0} -x -s -v {1} {2} --create-db --reuse-db --ds={}"')
     local(pytest_cmd.format(DC, app_name, cpu_cores, use_isort, settings))
+
+
+@task
+def db_backup(container_name='db_my_app', dest="fixtures/db_dump.sql"):
+    """Make backup for database.
+
+    Example:
+        docker exec -t -u postgres db_my_app pg_dumpall -c > fixtures/db_dump.sql
+    """
+    local(f"docker exec -t -u postgres {container_name} pg_dumpall -c > {dest}")
+
+
+@task
+def db_restore(container_name='db_my_app', src="fixtures/db_dump.sql"):
+    """Restore DB data from sql file.
+
+    Example:
+        cat fixtures/db_dump.sql | docker exec -i goodjob_db_1 psql -Upostgres
+    """
+    local(f"cat {src} | docker exec -i {container_name} psql -Upostgres")
