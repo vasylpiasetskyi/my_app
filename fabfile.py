@@ -11,7 +11,7 @@ from fabric.api import task, local
 
 
 DC = "docker-compose -f docker-compose.dev.yml"
-SETTINGS = "--settings config.settings.dev"
+SETTINGS = "--settings my_app.settings.dev"
 PYTHON = "python3"
 
 
@@ -78,10 +78,24 @@ def migrate(app='', settings=SETTINGS):
 @task
 def run(settings=SETTINGS):
     """Run django development server.
-    docker-compose -f docker-compose.dev.yml exec app python3 src/manage.py runserver 0.0.0.0:8000 --settings config.settings.dev
+    docker-compose -f docker-compose.dev.yml exec app python3 src/manage.py runserver 0.0.0.0:8000 --settings my_app.settings.dev
     """
     local_addr = "0.0.0.0:8000"
     local(f"{DC} exec app {PYTHON} src/manage.py runserver {local_addr} {settings}")
+
+
+# @task
+# def run(settings=SETTINGS):
+#     """Run django development server with celery worker and celery beat.
+#     docker-compose -f docker-compose.dev.yml exec -d worker celery --app good_job --workdir ./src worker --loglevel INFO -f /app/logs/worker.log & \
+#     docker-compose -f docker-compose.dev.yml exec -d beat celery --app good_job --workdir ./src beat --loglevel INFO -f /app/logs/beat.log & \
+#     docker-compose -f docker-compose.dev.yml exec app python3 src/manage.py runserver 0.0.0.0:8000 --settings good_job.settings.dev
+#     """
+#     local_addr = "0.0.0.0:8000"
+#     local(f"{DC} exec -d worker celery --app my_app --workdir ./src worker --loglevel INFO -f /app/logs/worker.log & "
+#           f"{DC} exec -d beat celery --app my_app --workdir ./src beat --loglevel INFO -f /app/logs/beat.log & "
+#           f"{DC} exec app {PYTHON} src/manage.py runserver {local_addr} {settings}")
+
 
 
 @task
