@@ -14,7 +14,7 @@ click-repl==0.2.0
 cryptography==37.0.4
 defusedxml==0.7.1
 Deprecated==1.2.13
-Django==4.0
+Django==4.0.6
 django-allauth==0.51.0
 django-crispy-forms==1.14.0
 Fabric3==1.14.post1
