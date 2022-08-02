@@ -1,18 +1,23 @@
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-
 from dotenv import load_dotenv
-from django.utils.translation import gettext_lazy as _
-
-from .logging import LOGGING
-
 
 load_dotenv()
 
+DEBUG = True
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY_DEV", "change_me")
+ALLOWED_HOSTS = ['*']
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 APP_DIR = os.path.dirname(os.path.dirname(PROJECT_DIR))
+
+
+# print("!!!! PROJECT_DIR: ", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# print("!!!! BASE_DIR_OLD: ", os.path.dirname(PROJECT_DIR))
+# print("!!!! APP_DIR: ", os.path.dirname(os.path.dirname(PROJECT_DIR)))
+# print("!!!! BASE_DIR: ", BASE_DIR)
 
 
 # Application definition
@@ -54,7 +59,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(APP_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -72,9 +77,7 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = 'my_app.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -108,7 +111,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -119,7 +121,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -142,7 +143,6 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(APP_DIR, 'media')
-
 
 # django-allauth config
 SITE_ID = 1
@@ -176,5 +176,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 CART_SESSION_ID = 'cart'
 COMPARE_SESSION_ID = 'compare'
 
-CELERY_BROKER_URL = "redis://redis:6379"
-CELERY_RESULT_BACKEND = "redis://redis:6379"
+
+
+# CELERY_BROKER_URL = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
+# CELERY_RESULT_BACKEND = os.environ.get("CELERY_BROKER", "redis://redis:6379/0")
+
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'

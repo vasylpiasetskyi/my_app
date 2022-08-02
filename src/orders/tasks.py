@@ -1,7 +1,9 @@
+from __future__ import absolute_import, unicode_literals
 import random
 from time import sleep
 
 from celery.utils.log import get_task_logger
+
 from django.core.mail import send_mail
 from .models import Order
 from my_app.celery import app as celery_app
@@ -22,10 +24,10 @@ def order_created(order_id):
                           message,
                           'admin@myshop.com',
                           [order.email])
-
+    sleep(100)
     return mail_sent
 
 
 @celery_app.task
 def rand():
-    return random.randint(1, 10) + random.randint(1, 10)
+    return 1 + 2
